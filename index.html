@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monetag Mini App</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<h1>Welcome to Monetag!</h1>
+<p>Earn coins by playing mini-games and completing tasks.</p>
+<button id="sendData">Send Test Data to Bot</button>
+
+<script>
+const tg = window.Telegram.WebApp;
+
+// Show back button in Telegram
+tg.BackButton.show();
+
+// Send data to bot on button click
+document.getElementById('sendData').onclick = function() {
+    tg.sendData(JSON.stringify({action: "test", coins: 10}));
+};
+</script>
+</body>
+</html>
