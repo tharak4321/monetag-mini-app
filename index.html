@@ -26,6 +26,7 @@
             --text-muted: #888;
             --energy-color: #00f2ea;
             --bomb-color: #FF5858;
+            --success-color: #4CAF50;
             --font-family: 'Poppins', sans-serif;
             --border-radius: 20px;
         }
@@ -43,11 +44,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
+        .app-container { display: flex; flex-direction: column; height: 100%; }
 
         /* --- Header --- */
         .header {
@@ -59,165 +56,94 @@
             backdrop-filter: blur(10px);
             border-bottom: 1px solid #333;
         }
-
-        .energy-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .energy-icon {
-            color: var(--energy-color);
-            text-shadow: 0 0 10px var(--energy-color);
-        }
+        .energy-display { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 700; }
+        .energy-icon { color: var(--energy-color); text-shadow: 0 0 10px var(--energy-color); }
 
         /* --- Main Content --- */
-        .main-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .page {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-        .page.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .main-content { flex-grow: 1; overflow-y: auto; padding: 20px; }
+        .page { display: none; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .game-card {
-            background: var(--card-color);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 1px solid #333;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--card-color); border-radius: var(--border-radius);
+            padding: 20px; margin-bottom: 20px; text-align: center;
+            border: 1px solid #333; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
         }
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
+        .game-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
         .game-card h2 { margin-top: 0; }
         .game-card p { color: var(--text-muted); }
 
         /* --- Bottom Navigation --- */
-        .bottom-nav {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            background: var(--card-color);
-            border-top: 1px solid #333;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .nav-item.active {
-            color: var(--energy-color);
-        }
+        .bottom-nav { display: flex; justify-content: space-around; padding: 10px 0; background: var(--card-color); border-top: 1px solid #333; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); cursor: pointer; transition: color 0.2s; }
+        .nav-item.active { color: var(--energy-color); }
         .nav-item .material-symbols-outlined { font-size: 28px; }
         .nav-item span { font-size: 12px; }
 
-        /* --- Game Modals --- */
+        /* --- Modals --- */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8);
+            display: flex; justify-content: center; align-items: center; z-index: 100;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
-        .modal-overlay.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: var(--card-color);
-            border-radius: var(--border-radius);
-            padding: 25px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid #444;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
+            background: var(--card-color); border-radius: var(--border-radius);
+            padding: 25px; width: 90%; max-width: 400px; text-align: center;
+            border: 1px solid #444; transform: scale(0.9); transition: transform 0.3s ease;
+            position: relative; /* For close button */
         }
-        .modal-overlay.visible .modal-content {
-            transform: scale(1);
-        }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
         .modal-content h2 { margin-top: 0; }
-        .close-modal-btn {
-            position: absolute;
-            top: 15px; right: 15px;
-            cursor: pointer;
-            color: var(--text-muted);
-        }
-        
-        /* --- General Button Style --- */
+        .close-modal-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; color: var(--text-muted); z-index: 10; }
+
+        /* --- Primary Button --- */
         .primary-button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 20px;
+            width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; color: white;
+            background: var(--primary-gradient); border: none; border-radius: 12px; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s; margin-top: 20px;
             box-shadow: 0 5px 15px rgba(248, 87, 166, 0.3);
         }
-        .primary-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(248, 87, 166, 0.4);
-        }
-        .primary-button:disabled {
-            filter: grayscale(1);
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
+        .primary-button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(248, 87, 166, 0.4); }
+        .primary-button:disabled { filter: grayscale(1); cursor: not-allowed; opacity: 0.6; }
 
-        /* --- Treasure Lock Game --- */
-        #lock-icon { font-size: 5rem; color: #aaa; }
-        .code-display { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .code-digit {
-            width: 50px; height: 50px;
-            background: #333; border-radius: 10px;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 1.5rem; font-weight: 600;
+        /* --- NEW Treasure Lock Game --- */
+        #treasure-lock-modal .modal-content { background-color: #2c2c2c; }
+        .lock-container { position: relative; width: 250px; height: 350px; margin: 0 auto; }
+        .lock-body {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 250px;
+            background-color: #6c757d; border-radius: 50%; z-index: 1;
         }
-        .number-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .num-button {
-            padding: 15px; background: var(--secondary-color);
-            border-radius: 10px; cursor: pointer;
+        .lock-shackle {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 150px; height: 150px; border: 25px solid #6c757d;
+            border-bottom: none; border-radius: 75px 75px 0 0;
         }
+        .lock-dial {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; cursor: grab; user-select: none;
+        }
+        .lock-dial:active { cursor: grabbing; }
+        .lock-marker {
+            position: absolute; top: 105px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 10px solid transparent;
+            border-right: 10px solid transparent; border-top: 15px solid #e63946; z-index: 3;
+        }
+        .target-numbers { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .target-digit {
+            width: 50px; height: 50px; border: 2px solid var(--text-muted);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem; font-weight: 600; transition: all 0.3s;
+        }
+        .target-digit.active { border-color: var(--energy-color); box-shadow: 0 0 10px var(--energy-color); }
+        .target-digit.found { background-color: var(--success-color); border-color: var(--success-color); color: white; }
 
         /* --- Energy Grid Game --- */
         #energy-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin: 20px 0; }
         .grid-node {
             aspect-ratio: 1/1; border-radius: 50%; background: var(--secondary-color);
-            transition: all 0.2s; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 1.5rem;
+            transition: all 0.2s; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;
         }
         .grid-node.revealed { background: #555; }
         .grid-node.energy { color: var(--energy-color); }
@@ -225,41 +151,18 @@
 
         /* --- Shake Game --- */
         #shaker-container {
-            width: 150px; height: 250px;
-            border: 4px solid white;
-            border-radius: 20px 20px 10px 10px;
-            margin: 20px auto;
-            position: relative;
-            overflow: hidden;
+            width: 150px; height: 250px; border: 4px solid white;
+            border-radius: 20px 20px 10px 10px; margin: 20px auto; position: relative; overflow: hidden;
         }
-        #shaker-fill {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            background: var(--primary-gradient);
-            height: 0%; /* Controlled by JS */
-            transition: height 0.3s ease;
-        }
-        #shaker-percent {
-            position: relative; z-index: 2;
-            font-size: 2rem; font-weight: 700;
-            display: flex; justify-content: center; align-items: center;
-            height: 100%;
-        }
+        #shaker-fill { position: absolute; bottom: 0; left: 0; right: 0; background: var(--primary-gradient); height: 0%; transition: height 0.3s ease; }
+        #shaker-percent { position: relative; z-index: 2; font-size: 2rem; font-weight: 700; display: flex; justify-content: center; align-items: center; height: 100%; }
 
         /* --- Tasks Page --- */
-        .task-item {
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--card-color); border: 1px solid #333;
-            padding: 15px; border-radius: 12px; margin-bottom: 10px;
-        }
+        .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-color); border: 1px solid #333; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
         .task-item.completed { opacity: 0.5; }
         .task-reward { color: var(--energy-color); font-weight: 600; }
-        .task-button {
-            padding: 8px 15px; background: var(--primary-gradient);
-            border: none; border-radius: 8px; color: white; cursor: pointer;
-        }
+        .task-button { padding: 8px 15px; background: var(--primary-gradient); border: none; border-radius: 8px; color: white; cursor: pointer; }
         .task-button:disabled { filter: grayscale(1); }
-
     </style>
 </head>
 <body>
@@ -281,7 +184,7 @@
                 <div class="game-card" data-modal="treasure-lock-modal">
                     <span class="material-symbols-outlined" style="font-size: 3rem;">diamond</span>
                     <h2>Treasure Lock</h2>
-                    <p>Listen to the clicks and crack the code!</p>
+                    <p>Enable sound and listen to find the numbers.</p>
                 </div>
                 <div class="game-card" data-modal="energy-grid-modal">
                     <span class="material-symbols-outlined" style="font-size: 3rem;">grid_view</span>
@@ -300,7 +203,7 @@
                 <h2>Daily Tasks</h2>
                 <div class="task-item" id="task-ad">
                     <div>
-                        <p style="margin:0;">Watch an Ad</p>
+                        <p style="margin:0; font-weight: 600;">Watch an Ad</p>
                         <small>Get a bonus reward!</small>
                     </div>
                     <div>
@@ -337,35 +240,31 @@
     </div>
 
     <!-- Modals -->
-    <!-- Treasure Lock Modal -->
     <div id="treasure-lock-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="material-symbols-outlined close-modal-btn">close</span>
-            <span id="lock-icon" class="material-symbols-outlined">lock</span>
             <h2>Treasure Lock</h2>
-            <p>Enter the 4-digit code.</p>
-            <div class="code-display">
-                <div class="code-digit" id="digit-1"></div>
-                <div class="code-digit" id="digit-2"></div>
-                <div class="code-digit" id="digit-3"></div>
-                <div class="code-digit" id="digit-4"></div>
+            <p>Listen for the 'clunk' to find the numbers.</p>
+            <div class="lock-container">
+                <div class="lock-shackle"></div>
+                <div class="lock-body"></div>
+                <div class="lock-marker"></div>
+                <svg id="lock-dial" class="lock-dial" viewBox="0 0 250 250">
+                    <circle cx="125" cy="125" r="120" fill="#343a40"/>
+                </svg>
             </div>
-            <div class="number-pad" id="treasure-lock-pad">
-                <!-- JS will generate buttons -->
-            </div>
+            <div class="target-numbers" id="target-numbers-display"></div>
         </div>
     </div>
-    <!-- Energy Grid Modal -->
     <div id="energy-grid-modal" class="modal-overlay">
-        <div class="modal-content">
+         <div class="modal-content">
             <span class="material-symbols-outlined close-modal-btn">close</span>
             <h2>Energy Grid</h2>
-            <p id="grid-status">Rounds Left: 1. Clicks Left: 15</p>
+            <p id="grid-status">Clicks Left: 15</p>
             <div id="energy-grid"></div>
             <button id="grid-reset-btn" class="primary-button">New Game</button>
         </div>
     </div>
-    <!-- Shake Game Modal -->
     <div id="shake-game-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="material-symbols-outlined close-modal-btn">close</span>
@@ -377,19 +276,31 @@
             <button id="shake-start-btn" class="primary-button">Start</button>
         </div>
     </div>
-
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- TELEGRAM & MONETAG INITIALIZATION ---
             const tg = window.Telegram.WebApp;
-            try { tg.ready(); tg.expand(); } catch (e) { console.warn("Telegram WebApp script failed."); }
+            try {
+                tg.ready();
+                tg.expand();
+            } catch (e) {
+                console.warn("Telegram WebApp script not found or failed. Running in browser mode.");
+            }
 
             // --- STATE MANAGEMENT ---
-            let state = { energy: 0, tasks: { adWatchedToday: false } };
+            let state = {
+                energy: 0,
+                tasks: {
+                    adWatchedToday: false
+                }
+            };
             const saveState = () => localStorage.setItem('energyGameState', JSON.stringify(state));
             const loadState = () => {
                 const saved = localStorage.getItem('energyGameState');
-                if (saved) { state = JSON.parse(saved); }
-                // Daily reset for tasks can be implemented here by checking a saved date
+                if (saved) {
+                    state = JSON.parse(saved);
+                }
+                // Note: A real app would check a saved date to reset daily tasks.
             };
 
             const addEnergy = (amount, source) => {
@@ -397,7 +308,16 @@
                 updateEnergyDisplay();
                 saveState();
                 if (tg && tg.sendData) {
-                    tg.sendData(JSON.stringify({ action: 'add_energy', amount, source, total_energy: state.energy }));
+                    try {
+                        tg.sendData(JSON.stringify({
+                            action: 'add_energy',
+                            amount: amount,
+                            source: source,
+                            total_energy: state.energy
+                        }));
+                    } catch (e) {
+                        console.error("Failed to send data to Telegram:", e);
+                    }
                 }
             };
 
@@ -412,21 +332,22 @@
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
                     const pageId = `page-${item.dataset.page}`;
-                    
                     navItems.forEach(nav => nav.classList.remove('active'));
                     item.classList.add('active');
-                    
                     pages.forEach(page => page.classList.remove('active'));
                     document.getElementById(pageId).classList.add('active');
                 });
             });
 
             // --- MODAL HANDLING ---
-            const modals = document.querySelectorAll('.modal-overlay');
             document.querySelectorAll('[data-modal]').forEach(trigger => {
                 trigger.addEventListener('click', () => {
                     const modalId = trigger.dataset.modal;
                     document.getElementById(modalId).classList.add('visible');
+                    // Initialize or reset the game when its modal is opened
+                    if (modalId === 'treasure-lock-modal') setupLockGame();
+                    if (modalId === 'energy-grid-modal') setupGridGame();
+                    if (modalId === 'shake-game-modal') setupShakeGame();
                 });
             });
             document.querySelectorAll('.close-modal-btn').forEach(btn => {
@@ -434,120 +355,194 @@
                     btn.closest('.modal-overlay').classList.remove('visible');
                 });
             });
-            modals.forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.remove('visible');
-                    }
-                });
-            });
 
             // --- GAME LOGIC ---
 
-            // 1. Treasure Lock
-            const lockPad = document.getElementById('treasure-lock-pad');
-            const codeDigits = [
-                document.getElementById('digit-1'),
-                document.getElementById('digit-2'),
-                document.getElementById('digit-3'),
-                document.getElementById('digit-4')
-            ];
-            const SECRET_CODE = "1730";
-            let userInput = "";
+            // --- 1. Treasure Lock Game ---
+            const lockDial = document.getElementById('lock-dial');
+            const targetNumbersDisplay = document.getElementById('target-numbers-display');
+            const SECRET_CODE = [10, 26, 30, 17];
+            const NUMBERS_ON_DIAL = 40;
+            let currentRotation = 0, startAngle = 0, isDragging = false;
+            let currentTargetIndex = 0, confirmationTimeout;
+            let lastTickNumber = -1;
 
-            const setupLockGame = () => {
-                userInput = "";
-                codeDigits.forEach(d => d.textContent = '');
-                lockPad.innerHTML = '';
-                const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'C', 'OK'];
-                nums.forEach(num => {
-                    const btn = document.createElement('button');
-                    btn.className = 'num-button';
-                    btn.textContent = num;
-                    btn.onclick = () => handleLockInput(num);
-                    lockPad.appendChild(btn);
+            const tickSound = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABgAZGF0YQAAAAA="); // Silent placeholder if needed, real sounds below
+            const clunkSound = new Audio("data:audio/wav;base64,UklGRigBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABgAZGF0YQQBAADp/1wAY/+bAGz/kABz/6cAZP+wAGf/tgBj/8IAYf/GAGT/xwBi/9gAXv/iAFv/pABe/7cAWP/BAFn/xgBa/9cAW//jAFj/2wBg/98AYv/qAGb/HwBl/zUAXv9rAF//fwBe/7gAWP/XAFj/7gBf/8AAXf/IAF//2QBc/+AAXP/rAF//+wBh/0cAX/9vAF//fgBe/6cAWv/TAFj/7QBd/8IAXP/MAF//3ABc/+cAW//7AF//SwBf/3UAXv98AF3/owBZ/9IAV//lAFv/xwBd/94AWf/vAFj/NwBc/2EAWf93AFn/nQBa/88AV//gAFv/1gBc/+IAWv/8AFn/MwBY/1kAWP9qAFf/jQBW/8gAVv/XAFf/5gBW/9gAWP/qAFn/EABe/ysAWv9iAFb/dABV/5gAVf/MAFb/2QBV/+QAVf/XAFj/6gBZ/xIAWv8uAFj/YQBV/3IAVf+VAFX/xABW/9YAVv/kAFX/0wBY/+kAWP8VAFj/LwBY/2MAVv90AFX/lgBV/8cAVv/XAFb/5wBW/9sAWP/sAFj/FwBY/zIAWP9kAFf/dABV/5cAVf/JAFb/3ABW/+UAVf/TAFj/8ABY/xoAWP84AFf/ZwBW/30AVf+hAFX/tQBV/8gAVf/YAFX/3gBV/+UAVv/vAFf/IwBW/0IAVf9vAFb/gQBV/6UAVf+5AFX/zwBV/90AVf/pAFb/8gBW//8=");
+            
+            function setupLockGame() {
+                currentTargetIndex = 0;
+                targetNumbersDisplay.innerHTML = '';
+                SECRET_CODE.forEach((num, index) => {
+                    const digitEl = document.createElement('div');
+                    digitEl.className = 'target-digit';
+                    digitEl.id = `target-${index}`;
+                    targetNumbersDisplay.appendChild(digitEl);
                 });
-            };
+                updateTargetDisplay();
+                drawDial();
+            }
 
-            const handleLockInput = (num) => {
-                if (num === 'C') {
-                    userInput = "";
-                } else if (num === 'OK') {
-                    if (userInput === SECRET_CODE) {
-                        alert("Code Correct! +50 Energy!");
-                        addEnergy(50, 'Treasure Lock');
-                        document.getElementById('treasure-lock-modal').classList.remove('visible');
-                    } else {
-                        alert("Wrong Code!");
-                        userInput = "";
+            function drawDial() {
+                // Clear previous ticks/numbers
+                while(lockDial.childNodes.length > 1) {
+                    lockDial.removeChild(lockDial.lastChild);
+                }
+                const centerX = 125, centerY = 125, radius = 105;
+                for (let i = 0; i < NUMBERS_ON_DIAL; i++) {
+                    const angle = (i / NUMBERS_ON_DIAL) * 360;
+                    const rad = angle * Math.PI / 180;
+                    const isFive = i % 5 === 0;
+                    const tickLength = isFive ? 15 : 8;
+                    
+                    const x1 = centerX + radius * Math.cos(rad);
+                    const y1 = centerY + radius * Math.sin(rad);
+                    const x2 = centerX + (radius - tickLength) * Math.cos(rad);
+                    const y2 = centerY + (radius - tickLength) * Math.sin(rad);
+
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+                    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+                    line.setAttribute('stroke', '#fff'); line.setAttribute('stroke-width', isFive ? 3: 2);
+                    lockDial.appendChild(line);
+
+                    if (isFive) {
+                        const textX = centerX + (radius - 28) * Math.cos(rad);
+                        const textY = centerY + (radius - 28) * Math.sin(rad);
+                        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        text.setAttribute('x', textX); text.setAttribute('y', textY);
+                        text.setAttribute('fill', '#fff'); text.setAttribute('font-size', '16');
+                        text.setAttribute('font-weight', 'bold'); text.setAttribute('text-anchor', 'middle');
+                        text.setAttribute('dominant-baseline', 'middle');
+                        text.setAttribute('transform', `rotate(${angle + 90} ${textX} ${textY})`);
+                        text.textContent = i;
+                        lockDial.appendChild(text);
                     }
-                } else if (userInput.length < 4) {
-                    userInput += num;
                 }
-                updateLockDisplay();
+            }
+            
+            function updateTargetDisplay() {
+                for (let i = 0; i < SECRET_CODE.length; i++) {
+                    const el = document.getElementById(`target-${i}`);
+                    el.classList.remove('active', 'found');
+                    if (i < currentTargetIndex) {
+                        el.classList.add('found');
+                        el.textContent = SECRET_CODE[i];
+                    } else if (i === currentTargetIndex) {
+                        el.classList.add('active');
+                    }
+                }
+            }
+
+            const getAngle = (event) => {
+                const rect = lockDial.getBoundingClientRect();
+                const x = (event.clientX || event.touches[0].clientX) - rect.left - rect.width / 2;
+                const y = (event.clientY || event.touches[0].clientY) - rect.top - rect.height / 2;
+                return Math.atan2(y, x) * 180 / Math.PI;
             };
 
-            const updateLockDisplay = () => {
-                for (let i = 0; i < 4; i++) {
-                    codeDigits[i].textContent = userInput[i] || '';
+            const rotateDial = (deg) => {
+                currentRotation = deg;
+                lockDial.style.transform = `rotate(${currentRotation}deg)`;
+                
+                const numberAngle = 360 / NUMBERS_ON_DIAL;
+                const dialNumber = Math.round(((360 - (currentRotation % 360)) % 360) / numberAngle) % NUMBERS_ON_DIAL;
+                
+                if (dialNumber !== lastTickNumber) {
+                    lastTickNumber = dialNumber;
+                    tickSound.currentTime = 0;
+                    tickSound.play().catch(e => {});
+
+                    if (dialNumber === SECRET_CODE[currentTargetIndex]) {
+                        clunkSound.currentTime = 0;
+                        clunkSound.play().catch(e => {});
+                        
+                        clearTimeout(confirmationTimeout);
+                        confirmationTimeout = setTimeout(() => {
+                           confirmNumber(dialNumber);
+                        }, 700); // Wait 700ms on the correct number to lock it in
+                    } else {
+                        clearTimeout(confirmationTimeout);
+                    }
                 }
             };
+            
+            function confirmNumber(num) {
+                if (num === SECRET_CODE[currentTargetIndex]) {
+                    currentTargetIndex++;
+                    updateTargetDisplay();
+                    if (currentTargetIndex === SECRET_CODE.length) {
+                        setTimeout(() => {
+                           alert("Treasure Unlocked! +150 Energy!");
+                           addEnergy(150, "Treasure Lock");
+                           document.getElementById('treasure-lock-modal').classList.remove('visible');
+                        }, 300);
+                    }
+                }
+            }
 
-            // 2. Energy Grid
+            lockDial.addEventListener('mousedown', (e) => { isDragging = true; startAngle = getAngle(e) - currentRotation; lockDial.style.cursor = 'grabbing'; });
+            lockDial.addEventListener('touchstart', (e) => { isDragging = true; startAngle = getAngle(e) - currentRotation; }, { passive: false });
+            
+            document.addEventListener('mousemove', (e) => { if (isDragging) rotateDial(getAngle(e) - startAngle); });
+            document.addEventListener('touchmove', (e) => { e.preventDefault(); if (isDragging) rotateDial(getAngle(e) - startAngle); }, { passive: false });
+
+            window.addEventListener('mouseup', () => { isDragging = false; lockDial.style.cursor = 'grab'; });
+            window.addEventListener('touchend', () => { isDragging = false; });
+            
+            // --- 2. Energy Grid Game ---
             const gridEl = document.getElementById('energy-grid');
             const gridStatusEl = document.getElementById('grid-status');
-            const GRID_SIZE = 64; // 8x8
-            const BOMB_COUNT = 8;
+            const GRID_SIZE = 64, BOMB_COUNT = 8;
             let clicksLeft = 15;
             let gridState = [];
 
             const setupGridGame = () => {
                 gridEl.innerHTML = '';
-                gridState = new Array(GRID_SIZE).fill({ type: 'empty' });
+                gridState = new Array(GRID_SIZE).fill(null).map(() => ({ type: 'empty', revealed: false }));
                 clicksLeft = 15;
 
-                // Place bombs
                 let bombsPlaced = 0;
                 while (bombsPlaced < BOMB_COUNT) {
                     const index = Math.floor(Math.random() * GRID_SIZE);
                     if (gridState[index].type === 'empty') {
-                        gridState[index] = { type: 'bomb', revealed: false };
+                        gridState[index].type = 'bomb';
                         bombsPlaced++;
                     }
                 }
-                // Place energy bolts
                 let energyPlaced = 0;
                 while (energyPlaced < 5) {
-                     const index = Math.floor(Math.random() * GRID_SIZE);
+                    const index = Math.floor(Math.random() * GRID_SIZE);
                     if (gridState[index].type === 'empty') {
-                        gridState[index] = { type: 'energy', revealed: false };
+                        gridState[index].type = 'energy';
                         energyPlaced++;
                     }
                 }
 
-                for (let i = 0; i < GRID_SIZE; i++) {
+                gridState.forEach((_, i) => {
                     const node = document.createElement('div');
                     node.className = 'grid-node';
-                    node.dataset.index = i;
-                    node.onclick = () => handleGridClick(i);
+                    node.addEventListener('click', () => handleGridClick(i), { once: true });
                     gridEl.appendChild(node);
-                }
+                });
                 updateGridStatus();
             };
 
             const handleGridClick = (index) => {
-                if (clicksLeft <= 0 || gridState[index].revealed) return;
+                if (clicksLeft <= 0) return;
                 
                 clicksLeft--;
                 const nodeData = gridState[index];
-                nodeData.revealed = true;
                 const nodeEl = gridEl.children[index];
                 nodeEl.classList.add('revealed');
 
                 if (nodeData.type === 'bomb') {
                     nodeEl.innerHTML = '💣';
                     nodeEl.classList.add('bomb');
-                    alert("BOOM! Game Over.");
+                    setTimeout(() => {
+                        alert("BOOM! Game Over.");
+                        revealGrid();
+                    }, 100);
                     clicksLeft = 0;
                 } else if (nodeData.type === 'energy') {
                     nodeEl.innerHTML = '⚡';
@@ -558,76 +553,70 @@
                 }
 
                 if (clicksLeft === 0) {
-                    revealGrid();
+                    setTimeout(revealGrid, 500);
                 }
                 updateGridStatus();
             };
             
             const revealGrid = () => {
-                for(let i=0; i<GRID_SIZE; i++) {
+                gridState.forEach((data, i) => {
                     const nodeEl = gridEl.children[i];
-                    if(!gridState[i].revealed) {
+                    if (!nodeEl.classList.contains('revealed')) {
                         nodeEl.classList.add('revealed');
-                        if (gridState[i].type === 'bomb') nodeEl.innerHTML = '💣';
-                        if (gridState[i].type === 'energy') nodeEl.innerHTML = '⚡';
+                        if (data.type === 'bomb') nodeEl.innerHTML = '💣';
+                        if (data.type === 'energy') nodeEl.innerHTML = '⚡';
                     }
-                }
+                });
             };
             
             const updateGridStatus = () => gridStatusEl.textContent = `Clicks Left: ${clicksLeft}`;
             document.getElementById('grid-reset-btn').addEventListener('click', setupGridGame);
 
-            // 3. Shake Game
+            // --- 3. Shake Game ---
             const shakeStartBtn = document.getElementById('shake-start-btn');
             const shakerFill = document.getElementById('shaker-fill');
             const shakerPercent = document.getElementById('shaker-percent');
-            let shakeProgress = 0;
-            let motionHandler;
+            let shakeProgress = 0, motionHandler;
+
+            const setupShakeGame = () => {
+                shakeProgress = 0;
+                updateShakerDisplay();
+                shakeStartBtn.disabled = false;
+            };
 
             shakeStartBtn.addEventListener('click', () => {
-                // Feature detection
                 if (typeof DeviceMotionEvent.requestPermission === 'function') {
                     DeviceMotionEvent.requestPermission()
-                        .then(permissionState => {
-                            if (permissionState === 'granted') {
-                                startShaking();
-                            } else {
-                                alert("Permission to access motion sensors was denied.");
-                            }
-                        })
+                        .then(state => { if (state === 'granted') startShaking(); else alert("Motion sensor access denied."); })
                         .catch(console.error);
                 } else {
-                    // Handle non-iOS 13+ devices
                     startShaking();
                 }
             });
 
             const startShaking = () => {
                 shakeStartBtn.disabled = true;
-                shakeProgress = 0;
-                updateShakerDisplay();
-
                 motionHandler = (event) => {
                     const { x, y, z } = event.acceleration;
                     const magnitude = Math.sqrt(x*x + y*y + z*z);
-                    if (magnitude > 15) { // Threshold for a decent shake
-                        shakeProgress += 2;
-                        if(shakeProgress > 100) shakeProgress = 100;
+                    if (magnitude > 15) {
+                        shakeProgress = Math.min(100, shakeProgress + 2);
                         updateShakerDisplay();
                     }
                 };
-
                 window.addEventListener('devicemotion', motionHandler);
 
                 setTimeout(() => {
                     window.removeEventListener('devicemotion', motionHandler);
-                    const energyEarned = Math.floor(shakeProgress * 0.75); // Max 75 energy
-                    alert(`Time's up! You earned ${energyEarned} energy.`);
-                    addEnergy(energyEarned, 'Shake Game');
-                    shakeStartBtn.disabled = false;
-                    shakeProgress = 0;
-                    updateShakerDisplay();
-                }, 7000); // 7 seconds
+                    const energyEarned = Math.floor(shakeProgress * 0.75);
+                    if(energyEarned > 0) {
+                        alert(`Time's up! You earned ${energyEarned} energy.`);
+                        addEnergy(energyEarned, 'Shake Game');
+                    } else {
+                        alert("No energy earned. Try shaking harder next time!");
+                    }
+                    setupShakeGame(); // Reset for next play
+                }, 7000);
             };
             
             const updateShakerDisplay = () => {
@@ -635,7 +624,7 @@
                 shakerPercent.textContent = `${Math.round(shakeProgress)}%`;
             };
 
-            // --- TASKS ---
+            // --- TASKS PAGE ---
             const taskAdBtn = document.getElementById('task-ad-btn');
             taskAdBtn.addEventListener('click', () => {
                 if (typeof show_10078019 === 'function') {
@@ -648,14 +637,14 @@
                         saveState();
                     }).catch(err => {
                         console.error("Monetag ad error:", err);
-                        taskAdBtn.disabled = false;
+                        taskAdBtn.disabled = false; // Re-enable if ad fails
                     });
                 } else {
-                    alert("Ad SDK not found. Rewarding directly for testing.");
+                    alert("Ad SDK not available. Rewarding directly for testing.");
                     addEnergy(100, "Monetag Ad");
                 }
             });
-
+            
             const updateTaskDisplay = () => {
                 if (state.tasks.adWatchedToday) {
                     taskAdBtn.textContent = 'Completed';
@@ -664,23 +653,20 @@
                 }
             };
             
-            // --- WALLET / ADMIN ---
+            // --- WALLET PAGE ---
             document.getElementById('reset-btn').addEventListener('click', () => {
-                if(confirm("Are you sure you want to reset all data?")) {
+                if(confirm("Are you sure you want to reset all energy and task progress?")) {
                     localStorage.removeItem('energyGameState');
                     state = { energy: 0, tasks: { adWatchedToday: false } };
                     initializeApp();
                 }
             });
 
-            // --- INITIALIZATION ---
+            // --- APP INITIALIZATION ---
             const initializeApp = () => {
                 loadState();
                 updateEnergyDisplay();
                 updateTaskDisplay();
-                // Setup games
-                setupLockGame();
-                setupGridGame();
             };
             
             initializeApp();
