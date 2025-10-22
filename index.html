@@ -1,303 +1,551 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monetag Mini App</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
-    background: #f5f5f5;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Monetag Mini App</title>
+    
+    <!-- Telegram WebApp Script -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Monetag SDK Script -->
+    <script src='//libtl.com/sdk.js' data-zone='10078019' data-sdk='show_10078019'></script>
+    
+    <style>
+        /* --- Global Styles & Variables --- */
+        :root {
+            --bg-color: #1a1a2e;
+            --card-color: #2a2a4e;
+            --primary-color: #e94560;
+            --secondary-color: #0f3460;
+            --text-color: #f0f0f0;
+            --coin-color: #f9d71c;
+            --success-color: #4CAF50;
+            --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
 
-  .card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    margin: 15px auto;
-    max-width: 400px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-  .game-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  button {
-    padding: 15px 25px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(90deg, #4facfe, #00f2fe);
-    color: #fff;
-    transition: transform 0.1s, box-shadow 0.2s;
-  }
+        /* --- App Layout --- */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
 
-  button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-  #popitContainer .bubble {
-    width: 50px;
-    height: 50px;
-    background-color: #FF6B6B;
-    border-radius: 50%;
-    display: inline-block;
-    margin: 5px;
-    cursor: pointer;
-    transition: transform 0.1s;
-  }
+        /* --- Header & Coin Display --- */
+        .header {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
 
-  #popitContainer .bubble:active {
-    transform: scale(0.8);
-  }
+        .coin-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
 
-  #tasksList {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
-  }
-</style>
+        #coin-balance {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--coin-color);
+            text-shadow: 0 0 10px rgba(249, 215, 28, 0.5);
+        }
+
+        .coin-icon {
+            font-size: 2.2rem;
+        }
+
+        /* --- Main Content & Cards --- */
+        .card {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        /* --- Buttons --- */
+        .action-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        .action-button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .reset-button {
+             background: linear-gradient(45deg, #6c757d, #343a40);
+        }
+
+        /* --- Pop-it Game --- */
+        .pop-it-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .bubble {
+            aspect-ratio: 1 / 1;
+            background-color: #4a4a70;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .bubble.popped {
+            background-color: var(--primary-color);
+            transform: scale(0.85);
+            pointer-events: none;
+        }
+
+        #pop-it-status {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* --- Screamer Challenge --- */
+        #screamer-status, #screamer-result {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        #screamer-result span {
+            color: var(--coin-color);
+        }
+
+        /* --- Task Feed --- */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            text-align: left;
+            background-color: #3a3a5e;
+            font-size: 1rem;
+        }
+        
+        .task-button.completed {
+            background: var(--success-color);
+            text-decoration: line-through;
+        }
+
+        .task-reward {
+            font-weight: 700;
+            color: var(--coin-color);
+        }
+
+    </style>
 </head>
 <body>
 
-<!-- Coin Balance -->
-<div id="coinBalance" class="card">Total Coins: 0</div>
-<button id="resetApp" style="margin-top:10px; padding:10px 20px; font-size:16px; border:none; border-radius:8px; background:#FF6B6B; color:#fff; cursor:pointer;">Reset / Start Over</button>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="coin-display">
+                <span class="coin-icon">💰</span>
+                <span id="coin-balance">0</span>
+            </div>
+        </header>
 
-<!-- Game Buttons -->
-<div class="card game-buttons">
-  <button id="popitGame">Play Pop-it</button>
-  <button id="screamerGame">Screamer Challenge</button>
-  <button id="taskFeed">Open Task Feed</button>
-  <button id="sendData">Send Test Data to Bot</button>
-</div>
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Pop-it Game -->
+            <div class="card">
+                <h2 data-lang="pop_it_title">Pop-it Game</h2>
+                <div class="pop-it-grid" id="pop-it-grid"></div>
+                <p id="pop-it-status"></p>
+                <button class="action-button" id="finish-pop-it-btn" data-lang="finish_pop_it" disabled>Finish Round</button>
+            </div>
 
-<!-- Pop-it Game -->
-<div id="popitContainer" class="card"></div>
-<p id="popitScore" style="font-size:18px; display:none;"></p>
-<button id="finishPopit" style="display:none;">Finish Game</button>
+            <!-- Screamer Challenge -->
+            <div class="card">
+                <h2 data-lang="screamer_title">Screamer Challenge</h2>
+                <p data-lang="screamer_desc">Scream for 7 seconds! Max volume = coins.</p>
+                <div id="screamer-status"></div>
+                <div id="screamer-result"></div>
+                <button class="action-button" id="start-screamer-btn" data-lang="start_screamer">Start Challenge</button>
+            </div>
 
-<!-- Screamer Challenge -->
-<div id="screamerContainer" class="card" style="display:none;">
-  <p>Scream as loud as you can for 7 seconds!</p>
-  <button id="startScreamer">Start Screamer</button>
-  <p id="screamerResult" style="font-size:18px; margin-top:10px;"></p>
-</div>
+            <!-- Task Feed -->
+            <div class="card">
+                <h2 data-lang="tasks_title">Task Feed</h2>
+                <div class="task-list">
+                    <button class="action-button task-button" id="task-video" data-coins="50">
+                        <span data-lang="task_video">Watch a video</span>
+                        <span class="task-reward">+50 💰</span>
+                    </button>
+                    <button class="action-button task-button" id="task-link" data-coins="15">
+                        <span data-lang="task_link">Open a link</span>
+                        <span class="task-reward">+15 💰</span>
+                    </button>
+                    <button class="action-button task-button" id="task-survey" data-coins="100">
+                        <span data-lang="task_survey">Complete a survey</span>
+                        <span class="task-reward">+100 💰</span>
+                    </button>
+                </div>
+            </div>
 
-<!-- Task Feed -->
-<div id="taskFeedContainer" class="card" style="display:none;">
-  <h2>Task Feed</h2>
-  <div id="tasksList"></div>
-</div>
+            <!-- Admin/Test Section -->
+            <div class="card">
+                <h2 data-lang="admin_title">Admin Panel</h2>
+                <button class="action-button" id="send-test-data-btn" data-lang="send_test_data">Send Test Data</button>
+                <button class="action-button reset-button" id="reset-btn" data-lang="reset_all">Reset/Start Over</button>
+            </div>
+        </main>
+    </div>
 
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.BackButton.show();
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TELEGRAM & MONETAG INITIALIZATION ---
+            const tg = window.Telegram.WebApp;
+            try {
+                tg.ready();
+                tg.expand();
+            } catch (e) {
+                console.warn("Telegram WebApp script not found or failed. Running in browser mode.");
+            }
+            
+            // --- I18N (LANGUAGE) SETUP ---
+            const translations = {
+                en: {
+                    pop_it_title: "Pop-it Game",
+                    finish_pop_it: "Finish Round",
+                    screamer_title: "Screamer Challenge",
+                    screamer_desc: "Scream for 7 seconds! Max volume = coins.",
+                    start_screamer: "Start Challenge",
+                    tasks_title: "Task Feed",
+                    task_video: "Watch a video",
+                    task_link: "Open a link",
+                    task_survey: "Complete a survey",
+                    admin_title: "Admin Panel",
+                    send_test_data: "Send Test Data",
+                    reset_all: "Reset/Start Over",
+                    confirm_reset: "Are you sure you want to reset all progress and coins?",
+                    pop_it_status: (popped, total) => `Popped: ${popped}/${total}`,
+                    screamer_listening: (time) => `Listening... ${time}s`,
+                    screamer_analyzing: "Analyzing...",
+                    screamer_result: (coins) => `Max Volume: <span>${coins}</span> coins earned!`,
+                    screamer_error: "Could not access microphone.",
+                    coins_added: (amount, source) => `${amount} coins added from ${source}!`
+                },
+                hi: {
+                    pop_it_title: "पॉप-इट गेम",
+                    finish_pop_it: "राउंड समाप्त करें",
+                    screamer_title: "स्क्रीमर चैलेंज",
+                    screamer_desc: "7 सेकंड के लिए चिल्लाएं! अधिकतम वॉल्यूम = सिक्के।",
+                    start_screamer: "चैलेंज शुरू करें",
+                    tasks_title: "टास्क फ़ीड",
+                    task_video: "एक वीडियो देखें",
+                    task_link: "एक लिंक खोलें",
+                    task_survey: "एक सर्वेक्षण पूरा करें",
+                    admin_title: "एडमिन पैनल",
+                    send_test_data: "टेस्ट डेटा भेजें",
+                    reset_all: "रीसेट/फिर से शुरू करें",
+                    confirm_reset: "क्या आप वाकई सारी प्रगति और सिक्के रीसेट करना चाहते हैं?",
+                    pop_it_status: (popped, total) => `पॉप किया: ${popped}/${total}`,
+                    screamer_listening: (time) => `सुन रहा है... ${time}s`,
+                    screamer_analyzing: "विश्लेषण हो रहा है...",
+                    screamer_result: (coins) => `अधिकतम वॉल्यूम: <span>${coins}</span> सिक्के कमाए!`,
+                    screamer_error: "माइक्रोफ़ोन तक नहीं पहुंच सका।",
+                    coins_added: (amount, source) => `${source} से ${amount} सिक्के जोड़े गए!`
+                }
+            };
+            const userLang = navigator.language.startsWith('hi') ? 'hi' : 'en';
+            const t = (key, ...args) => {
+                const translation = translations[userLang][key];
+                return typeof translation === 'function' ? translation(...args) : translation;
+            };
 
-  // Multi-language support
-  const languages = {
-    en: {
-      welcome: "Welcome to Monetag Mini App!",
-      playGames: "Play games and earn coins!",
-      popit: "Play Pop-it",
-      screamer: "Screamer Challenge",
-      taskFeed: "Open Task Feed",
-      sendTest: "Send Test Data to Bot",
-      reset: "Reset / Start Over",
-      coinsEarned: "Coins Earned: ",
-      taskCompleted: "Task Completed! You earned "
-    },
-    hi: {
-      welcome: "मॉनेटैग मिनी ऐप में आपका स्वागत है!",
-      playGames: "गेम खेलें और सिक्के कमाएँ!",
-      popit: "पॉप-इट खेलें",
-      screamer: "स्क्रीमर चैलेंज",
-      taskFeed: "टास्क फीड खोलें",
-      sendTest: "बॉट को टेस्ट डेटा भेजें",
-      reset: "रीसेट / फिर से शुरू करें",
-      coinsEarned: "कमाए गए सिक्के: ",
-      taskCompleted: "टास्क पूरा! आपने कमाए "
-    }
-  };
+            const applyTranslations = () => {
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    const key = el.getAttribute('data-lang');
+                    if (translations[userLang][key]) {
+                        el.textContent = t(key);
+                    }
+                });
+            };
 
-  let userLang = navigator.language.slice(0,2);
-  if(!languages[userLang]) userLang = 'en';
-  const lang = languages[userLang];
+            // --- STATE MANAGEMENT ---
+            let state = {
+                coins: 0,
+                tasks: {
+                    video: false,
+                    link: false,
+                    survey: false,
+                }
+            };
 
-  document.querySelector('h1')?.textContent = lang.welcome;
-  document.querySelector('p')?.textContent = lang.playGames;
-  document.getElementById('popitGame').textContent = lang.popit;
-  document.getElementById('screamerGame').textContent = lang.screamer;
-  document.getElementById('taskFeed').textContent = lang.taskFeed;
-  document.getElementById('sendData').textContent = lang.sendTest;
-  document.getElementById('resetApp').textContent = lang.reset;
+            const saveState = () => localStorage.setItem('monetagAppState', JSON.stringify(state));
+            const loadState = () => {
+                const saved = localStorage.getItem('monetagAppState');
+                if (saved) {
+                    state = JSON.parse(saved);
+                }
+            };
 
-  // Coin Balance
-  let totalCoins = 0;
-  const coinBalanceDiv = document.getElementById('coinBalance');
-  function updateBalance(coins) {
-    totalCoins += coins;
-    coinBalanceDiv.textContent = "Total Coins: " + totalCoins;
-  }
-  function handleCoinData(action, coins) {
-    updateBalance(coins);
-    if(action === "popit_finish") popitScoreText.textContent = lang.coinsEarned + coins;
-    else if(action === "screamer_finish") screamerResult.textContent = lang.coinsEarned + coins;
-  }
+            // --- UI UPDATE FUNCTIONS ---
+            const updateCoinDisplay = () => {
+                const coinBalanceEl = document.getElementById('coin-balance');
+                coinBalanceEl.textContent = state.coins;
+                coinBalanceEl.style.transform = 'scale(1.2)';
+                setTimeout(() => coinBalanceEl.style.transform = 'scale(1)', 200);
+            };
 
-  // Reset button
-  const resetBtn = document.getElementById('resetApp');
-  resetBtn.onclick = function() {
-    totalCoins = 0;
-    coinBalanceDiv.textContent = "Total Coins: 0";
-    popitContainer.style.display = 'none';
-    finishPopitBtn.style.display = 'none';
-    popitScoreText.style.display = 'none';
-    screamerContainer.style.display = 'none';
-    screamerResult.textContent = '';
-    taskFeedContainer.style.display = 'none';
-    popitContainer.innerHTML = '';
-    renderTasks();
-    alert("App has been reset! You can start again.");
-  };
+            const updateTaskButtons = () => {
+                document.getElementById('task-video').disabled = state.tasks.video;
+                document.getElementById('task-video').classList.toggle('completed', state.tasks.video);
+                document.getElementById('task-link').disabled = state.tasks.link;
+                document.getElementById('task-link').classList.toggle('completed', state.tasks.link);
+                document.getElementById('task-survey').disabled = state.tasks.survey;
+                document.getElementById('task-survey').classList.toggle('completed', state.tasks.survey);
+            };
 
-  // Test data button
-  document.getElementById('sendData').onclick = function() {
-    tg.sendData(JSON.stringify({action: "test", coins: 10}));
-  };
+            // --- CORE LOGIC ---
+            const sendDataToTelegram = (data) => {
+                if (tg && tg.sendData) {
+                    tg.sendData(JSON.stringify(data));
+                } else {
+                    console.log("Telegram Mode: OFF. Data:", data);
+                }
+            };
+            
+            const addCoins = (amount, source) => {
+                state.coins += amount;
+                updateCoinDisplay();
+                saveState();
+                sendDataToTelegram({
+                    action: 'add_coins',
+                    amount: amount,
+                    source: source,
+                    total_coins: state.coins
+                });
+                // Optional: Show a subtle notification
+            };
 
-  // Pop-it Game
-  const popitButton = document.getElementById('popitGame');
-  const popitContainer = document.getElementById('popitContainer');
-  const popitScoreText = document.getElementById('popitScore');
-  const finishPopitBtn = document.getElementById('finishPopit');
-  let score = 0;
+            // --- POP-IT GAME LOGIC ---
+            const popItGrid = document.getElementById('pop-it-grid');
+            const popItStatusEl = document.getElementById('pop-it-status');
+            const finishPopItBtn = document.getElementById('finish-pop-it-btn');
+            const BUBBLE_COUNT = 20;
+            let poppedCount = 0;
 
-  popitButton.onclick = function() {
-    popitContainer.innerHTML = '';
-    score = 0;
-    popitScoreText.textContent = lang.coinsEarned + 0;
-    popitScoreText.style.display = 'block';
-    popitContainer.style.display = 'block';
-    finishPopitBtn.style.display = 'inline-block';
+            const setupPopIt = () => {
+                popItGrid.innerHTML = '';
+                poppedCount = 0;
+                for (let i = 0; i < BUBBLE_COUNT; i++) {
+                    const bubble = document.createElement('div');
+                    bubble.classList.add('bubble');
+                    bubble.addEventListener('click', () => {
+                        if (!bubble.classList.contains('popped')) {
+                            bubble.classList.add('popped');
+                            poppedCount++;
+                            updatePopItStatus();
+                        }
+                    }, { once: true });
+                    popItGrid.appendChild(bubble);
+                }
+                updatePopItStatus();
+                finishPopItBtn.disabled = true;
+            };
 
-    for(let i=0;i<20;i++){
-      const bubble = document.createElement('div');
-      bubble.classList.add('bubble');
-      bubble.onclick = function() {
-        score += 1;
-        popitScoreText.textContent = lang.coinsEarned + score;
-        bubble.style.visibility = 'hidden';
-      };
-      popitContainer.appendChild(bubble);
-    }
-  };
+            const updatePopItStatus = () => {
+                popItStatusEl.textContent = t('pop_it_status', poppedCount, BUBBLE_COUNT);
+                finishPopItBtn.disabled = poppedCount === 0;
+            };
 
-  finishPopitBtn.onclick = function() {
-    tg.sendData(JSON.stringify({action: "popit_finish", coins: score}));
-    handleCoinData("popit_finish", score);
-    alert("Coins sent to bot: " + score);
-    popitContainer.style.display = 'none';
-    finishPopitBtn.style.display = 'none';
-    popitScoreText.style.display = 'none';
-  };
+            finishPopItBtn.addEventListener('click', () => {
+                addCoins(poppedCount, 'Pop-it Game');
+                setupPopIt();
+            });
 
-  // Screamer Challenge
-  const screamerButton = document.getElementById('screamerGame');
-  const screamerContainer = document.getElementById('screamerContainer');
-  const startScreamerBtn = document.getElementById('startScreamer');
-  const screamerResult = document.getElementById('screamerResult');
+            // --- SCREAMER CHALLENGE LOGIC ---
+            const startScreamerBtn = document.getElementById('start-screamer-btn');
+            const screamerStatusEl = document.getElementById('screamer-status');
+            const screamerResultEl = document.getElementById('screamer-result');
 
-  screamerButton.onclick = function() {
-    screamerContainer.style.display = 'block';
-    popitContainer.style.display = 'none';
-    finishPopitBtn.style.display = 'none';
-    screamerResult.textContent = '';
-  };
+            startScreamerBtn.addEventListener('click', async () => {
+                startScreamerBtn.disabled = true;
+                screamerResultEl.innerHTML = '';
+                let stream;
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                } catch (err) {
+                    screamerStatusEl.textContent = t('screamer_error');
+                    startScreamerBtn.disabled = false;
+                    return;
+                }
 
-  startScreamerBtn.onclick = async function() {
-    screamerResult.textContent = "Get ready...";
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const source = audioContext.createMediaStreamSource(stream);
-      const analyser = audioContext.createAnalyser();
-      source.connect(analyser);
-      analyser.fftSize = 512;
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                const audioContext = new AudioContext();
+                const analyser = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                analyser.fftSize = 256;
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                
+                let maxVolume = 0;
+                let timeLeft = 7;
 
-      let maxVolume = 0;
-      const startTime = Date.now();
-      const duration = 7000;
+                const interval = setInterval(() => {
+                    analyser.getByteFrequencyData(dataArray);
+                    let sum = 0;
+                    dataArray.forEach(value => sum += value);
+                    let average = sum / dataArray.length;
+                    if(average > maxVolume) maxVolume = Math.round(average);
+                    
+                    screamerStatusEl.textContent = t('screamer_listening', timeLeft);
+                    timeLeft--;
 
-      function checkVolume() {
-        analyser.getByteFrequencyData(dataArray);
-        const currentVolume = Math.max(...dataArray);
-        if(currentVolume > maxVolume) maxVolume = currentVolume;
+                    if (timeLeft < 0) {
+                        clearInterval(interval);
+                        stream.getTracks().forEach(track => track.stop());
+                        screamerStatusEl.textContent = t('screamer_analyzing');
+                        setTimeout(() => {
+                            const coinsEarned = maxVolume; // 1-to-1 mapping
+                            addCoins(coinsEarned, 'Screamer Challenge');
+                            screamerResultEl.innerHTML = t('screamer_result', coinsEarned);
+                            screamerStatusEl.textContent = '';
+                            startScreamerBtn.disabled = false;
+                        }, 1000);
+                    }
+                }, 1000);
+            });
 
-        if(Date.now() - startTime < duration) {
-          requestAnimationFrame(checkVolume);
-        } else {
-          stream.getTracks().forEach(track => track.stop());
-          const coinsEarned = Math.floor(maxVolume / 10);
-          screamerResult.textContent = lang.coinsEarned + coinsEarned;
-          tg.sendData(JSON.stringify({action: "screamer_finish", coins: coinsEarned}));
-          handleCoinData("screamer_finish", coinsEarned);
-        }
-      }
+            // --- TASK FEED LOGIC ---
+            document.getElementById('task-video').addEventListener('click', (e) => {
+                if (state.tasks.video) return;
+                // Monetag Rewarded Ad integration
+                if (typeof show_10078019 === 'function') {
+                    show_10078019().then(() => {
+                        const coins = parseInt(e.currentTarget.dataset.coins);
+                        addCoins(coins, 'Watch Video Task');
+                        state.tasks.video = true;
+                        updateTaskButtons();
+                        saveState();
+                    }).catch(err => console.error("Monetag ad error:", err));
+                } else {
+                    alert("Ad SDK not available. Rewarding directly.");
+                    const coins = parseInt(e.currentTarget.dataset.coins);
+                    addCoins(coins, 'Watch Video Task');
+                    state.tasks.video = true;
+                    updateTaskButtons();
+                    saveState();
+                }
+            });
 
-      screamerResult.textContent = "Screaming now!";
-      checkVolume();
-    } catch(err) {
-      screamerResult.textContent = "Microphone access denied!";
-      console.error(err);
-    }
-  };
+            document.getElementById('task-link').addEventListener('click', (e) => {
+                if (state.tasks.link) return;
+                const coins = parseInt(e.currentTarget.dataset.coins);
+                addCoins(coins, 'Open Link Task');
+                state.tasks.link = true;
+                tg.openLink('https://monetag.com/', {try_instant_view: true});
+                updateTaskButtons();
+                saveState();
+            });
 
-  // Task Feed
-  const taskFeedButton = document.getElementById('taskFeed');
-  const taskFeedContainer = document.getElementById('taskFeedContainer');
-  const tasksList = document.getElementById('tasksList');
+            document.getElementById('task-survey').addEventListener('click', (e) => {
+                if (state.tasks.survey) return;
+                const coins = parseInt(e.currentTarget.dataset.coins);
+                addCoins(coins, 'Survey Task');
+                state.tasks.survey = true;
+                tg.openLink('https://monetag.com/survey-example', {try_instant_view: true}); // Example link
+                updateTaskButtons();
+                saveState();
+            });
 
-  taskFeedButton.onclick = function() {
-    taskFeedContainer.style.display = 'block';
-    popitContainer.style.display = 'none';
-    finishPopitBtn.style.display = 'none';
-    screamerContainer.style.display = 'none';
-  };
+            // --- ADMIN BUTTONS LOGIC ---
+            document.getElementById('send-test-data-btn').addEventListener('click', () => {
+                sendDataToTelegram({
+                    action: 'test_data',
+                    user_id: tg.initDataUnsafe?.user?.id || '_test_user_',
+                    timestamp: new Date().toISOString(),
+                    current_coins: state.coins
+                });
+            });
 
-  const tasks = [
-    {id: 1, title: "Watch a short video", type: "video", coins: 5},
-    {id: 2, title: "Open a link", type: "link", coins: 3},
-    {id: 3, title: "Complete survey", type: "link", coins: 10}
-  ];
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                if (confirm(t('confirm_reset'))) {
+                    localStorage.removeItem('monetagAppState');
+                    state = { coins: 0, tasks: { video: false, link: false, survey: false } };
+                    updateCoinDisplay();
+                    updateTaskButtons();
+                    setupPopIt();
+                }
+            });
 
-  function renderTasks() {
-    tasksList.innerHTML = '';
-    tasks.forEach(task => {
-      const btn = document.createElement('button');
-      btn.textContent = `${task.title} (+${task.coins} coins)`;
-      btn.onclick = function() {
-        alert(lang.taskCompleted + task.coins);
-        tg.sendData(JSON.stringify({action: "task_completed", taskId: task.id, coins: task.coins}));
-        handleCoinData("task_completed", task.coins);
-        btn.disabled = true;
-      };
-      tasksList.appendChild(btn);
-    });
-  }
+            // --- APP INITIALIZATION ---
+            const initializeApp = () => {
+                applyTranslations();
+                loadState();
+                updateCoinDisplay();
+                updateTaskButtons();
+                setupPopIt();
+            };
 
-  renderTasks();
-</script>
-
+            initializeApp();
+        });
+    </script>
 </body>
 </html>
